@@ -1,4 +1,4 @@
-
+package Question5;
 //5.a a) Implement hill climbing algorithm
 import java.util.Random;
 public class HillClimbing {

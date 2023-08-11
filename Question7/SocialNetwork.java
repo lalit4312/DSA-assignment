@@ -1,3 +1,4 @@
+package Question7;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class SocialNetworkGraphApp {
+public class SocialNetwork {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -23,11 +24,11 @@ public class SocialNetworkGraphApp {
             JButton addNodeButton = new JButton("Add Node");
             addNodeButton.addActionListener(e -> graphPanel.addNode());
 
-            JButton addEdgeButton = new JButton("Add Edge");
+            JButton addEdgeButton = new JButton("Add Question3.Edge");
             addEdgeButton.addActionListener(e -> graphPanel.setEdgeMode(true));
 
             JButton deleteButton = new JButton("Delete");
-            deleteButton.addActionListener(e -> graphPanel.deleteSelected());
+            deleteButton.addActionListener(e -> graphPanel.setDeleteMode(true));
 
             JTextField searchField = new JTextField(15);
             searchField.addKeyListener(new KeyAdapter() {
@@ -56,6 +57,7 @@ public class SocialNetworkGraphApp {
         private List<Node> nodes;
         private List<Edge> edges;
         private Node selectedNode;
+        private boolean deleteMode;
         private Edge selectedEdge;
         private String searchQuery;
         private boolean edgeMode;
@@ -72,20 +74,23 @@ public class SocialNetworkGraphApp {
             nodePositions = new HashMap<>();
             edgePositions = new HashMap<>();
 
-            loadUserData("user_data.txt"); // Load user data from file
-
+            loadGraphData("Question7/lalitdata.txt"); // Load user data from file
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
+                    if (deleteMode) {
+                        deleteNodeOrEdge(e.getX(), e.getY());
+                    }
                     if (edgeMode) {
+                        if (deleteMode) {
+                        deleteMode = false;
+                        }
                         if (startNodeForEdge == null) {
                             selectStartNodeForEdge(e.getX(), e.getY());
                         } else if (endNodeForEdge == null) {
                             selectEndNodeForEdge(e.getX(), e.getY());
                             establishConnection();
-                        } else {
-                            resetEdgeMode();
-                        }
+                        }      
                     } else {
                         selectNode(e.getX(), e.getY());
                     }
@@ -99,27 +104,164 @@ public class SocialNetworkGraphApp {
                 }
             });
         }
+        private void deleteNodeOrEdge(int x, int y) {
+            Node nodeToDelete = null;
+            Edge edgeToDelete = null;
+        
+            // Check if a node is clicked
+            for (Node node : nodes) {
+                Point position = nodePositions.get(node);
+                int nodeX = position.x;
+                int nodeY = position.y;
+        
+                if (x >= nodeX - 20 && x <= nodeX + 20 && y >= nodeY - 20 && y <= nodeY + 20) {
+                    nodeToDelete = node;
+                    break;
+                }
+            }
+        
+            // Check if an edge is clicked
+            if (nodeToDelete == null) {
+                for (Edge edge : edges) {
+                    Point[] points = edgePositions.get(edge);
+                    if (points != null) {
+                        int startX = points[0].x;
+                        int startY = points[0].y;
+                        int endX = points[1].x;
+                        int endY = points[1].y;
+        
+                        if (x >= startX && x <= endX && y >= Math.min(startY, endY) && y <= Math.max(startY, endY)) {
+                            edgeToDelete = edge;
+                            break;
+                        }
+                    }
+                }
+            }
+        
+            if (nodeToDelete != null) {
+                deleteNode(nodeToDelete);
+            } else if (edgeToDelete != null) {
+                deleteEdge(edgeToDelete);
+            }
+        
+            repaint();
+        }
+        private void deleteNode(Node node) {
+            nodes.remove(node);
+            followersMap.remove(node);
+            nodePositions.remove(node);
+        
+            // Remove connected edges
+            List<Edge> edgesToRemove = new ArrayList<>();
+            for (Edge edge : edges) {
+                if (edge.getStartNode() == node || edge.getEndNode() == node) {
+                    edgesToRemove.add(edge);
+                }
+            }
+              // Update followers count for connected nodes and remove edges
+            for (Edge edge : edgesToRemove) {
+                Node otherNode = edge.getStartNode() == node ? edge.getEndNode() : edge.getStartNode();
+                followersMap.put(otherNode, followersMap.getOrDefault(otherNode, 0) - 1);
+                edgePositions.remove(edge);
+            }
+            edges.removeAll(edgesToRemove);
+            for (Edge edge : edgesToRemove) {
+                edgePositions.remove(edge);
+            }
+        }
+        
+        private void deleteEdge(Edge edge) {
+            edges.remove(edge);
+            edgePositions.remove(edge);
+        }
+                
 
         private void loadUserData(String fileName) {
             try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
                 String line;
+                // while ((line = br.readLine()) != null) {
+                //     String[] parts = line.split(",");
+                //     if (parts.length == 4) {
+                //         int id = Integer.parseInt(parts[0]);
+                //         int x = Integer.parseInt(parts[1]);
+                //         int y = Integer.parseInt(parts[2]);
+                //         int followers = Integer.parseInt(parts[3]);
+                //         Node newNode = new Node(id, x, y);
+                //         nodes.add(newNode);
+                //         followersMap.put(newNode, followers);
+                //         nodePositions.put(newNode, new Point(x, y));
+                //     }
+                // }
+                loadGraphData("Question7/lalitdata.txt");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        private void loadGraphData(String fileName) {
+            try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+                String line;
+                Map<Integer, Node> idToNodeMap = new HashMap<>(); // Map to store nodes by ID
                 while ((line = br.readLine()) != null) {
                     String[] parts = line.split(",");
-                    if (parts.length == 4) {
-                        int id = Integer.parseInt(parts[0]);
-                        int x = Integer.parseInt(parts[1]);
-                        int y = Integer.parseInt(parts[2]);
-                        int followers = Integer.parseInt(parts[3]);
-                        Node newNode = new Node(id, x, y);
-                        nodes.add(newNode);
-                        followersMap.put(newNode, followers);
-                        nodePositions.put(newNode, new Point(x, y));
+                    if (parts.length == 2) {
+                        Integer sourceId = Integer.parseInt(parts[0]);
+                        Integer targetId = Integer.parseInt(parts[1]);
+                        // Retrieve or create nodes using their IDs
+                        Node sourceNode = null;
+                        Node targetNode = null;
+                        if(idToNodeMap.containsKey(sourceId)){
+                            sourceNode = idToNodeMap.get(sourceId);
+                        }
+                        else{
+                            sourceNode = createNewNode(sourceId);
+                        }
+                        if(idToNodeMap.containsKey(targetId)){
+                            targetNode = idToNodeMap.get(sourceId);
+                        }
+                        else{
+                            targetNode = createNewNode(targetId);
+                        }
+//                        Node sourceNode = idToNodeMap.getOrDefault(sourceId, createNewNode(sourceId));
+//                        Node targetNode = idToNodeMap.getOrDefault(targetId, createNewNode(targetId));
+                        idToNodeMap.put(sourceId, sourceNode);
+                        idToNodeMap.put(targetId, targetNode);
+                        // If both nodes are found, add an edge
+                        if (sourceNode != null && targetNode != null) {
+                            Edge newEdge = new Edge(sourceNode, targetNode);
+                            edges.add(newEdge);
+                            edgePositions.put(newEdge, new Point[]{nodePositions.get(sourceNode), nodePositions.get(targetNode)});
+                            
+                            // Increment followers count for connected nodes
+                            followersMap.put(sourceNode, followersMap.getOrDefault(sourceNode, 0) + 1);
+                            followersMap.put(targetNode, followersMap.getOrDefault(targetNode, 0) + 1);
+                        }
                     }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        
+        // Helper method to create a new node with a given ID and random position
+        private Node createNewNode(int id) {
+            int x = (int) (Math.random() * 800);
+            int y = (int) (Math.random() * 600);
+            Node newNode = new Node(id, x, y);
+            nodes.add(newNode);
+            nodePositions.put(newNode, new Point(x, y));
+            return newNode;
+        }
+        
+        
+
+        public void setDeleteMode(boolean deleteMode) {
+            this.deleteMode = deleteMode;
+            selectedNode = null;
+            selectedEdge = null;
+            repaint();
+        }
+
+
 
         public void setEdgeMode(boolean edgeMode) {
             this.edgeMode = edgeMode;
@@ -209,6 +351,7 @@ public class SocialNetworkGraphApp {
             repaint();
         }
 
+
         public void deleteSelected() {
             if (selectedNode != null) {
                 // Remove the edges connected to the selected node
@@ -218,23 +361,25 @@ public class SocialNetworkGraphApp {
                         edgesToRemove.add(edge);
                     }
                 }
-                edges.removeAll(edgesToRemove);
-
-                // Update followers count for connected nodes
+        
+                // Update followers count for connected nodes and remove edges
                 for (Edge edge : edgesToRemove) {
                     Node startNode = edge.getStartNode();
                     Node endNode = edge.getEndNode();
                     followersMap.put(startNode, followersMap.getOrDefault(startNode, 0) - 1);
                     followersMap.put(endNode, followersMap.getOrDefault(endNode, 0) - 1);
+                    edgePositions.remove(edge); // Remove edge positions mapping
                 }
-
-                // Remove the selected node
-                nodes.remove(selectedNode);
+        
+                // Remove the selected node and its associated edges
+                nodes.removeIf(node -> node.getId() == selectedNode.getId());
                 followersMap.remove(selectedNode);
                 nodePositions.remove(selectedNode);
+                edges.removeAll(edgesToRemove);
+        
                 selectedNode = null;
                 selectedEdge = null;
-
+        
                 // Repaint the panel to update the graph
                 repaint();
             } else if (selectedEdge != null) {
@@ -243,17 +388,28 @@ public class SocialNetworkGraphApp {
                 Node endNode = selectedEdge.getEndNode();
                 followersMap.put(startNode, followersMap.getOrDefault(startNode, 0) - 1);
                 followersMap.put(endNode, followersMap.getOrDefault(endNode, 0) - 1);
-
-                // Remove the selected edge
+        
+                // Remove the selected edge and the unconnected node
                 edges.remove(selectedEdge);
                 edgePositions.remove(selectedEdge);
+        
+                Node unconnectedNode = (startNode.getX() == endNode.getX() && startNode.getY() == endNode.getY()) ?
+                                        startNode : null;
+                if (unconnectedNode != null) {
+                    nodes.removeIf(node -> node.getId() == unconnectedNode.getId());
+                    followersMap.remove(unconnectedNode);
+                    nodePositions.remove(unconnectedNode);
+                }
+        
                 selectedEdge = null;
-
+        
                 // Repaint the panel to update the graph
                 repaint();
             }
         }
-
+        
+        
+        
         public void searchUser(String query) {
             searchQuery = query.toLowerCase();
             repaint();
@@ -439,3 +595,4 @@ public class SocialNetworkGraphApp {
         }
     }
 }
+

@@ -1,4 +1,4 @@
-// Task 6
+package Question6;// Task 6
 // Write a Java program that uses multithreading to implement a parallel merge sort algorithm. Your program should
 // meet the following requirements:
 // 1. Input: Your program should accept an array of integers as input.

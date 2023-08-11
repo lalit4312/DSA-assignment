@@ -1,4 +1,4 @@
-
+package Question3;
 // 3.
 //b) Implement bellman ford algorithm and priority queue using maximum heap
 // Import necessary libraries
@@ -12,7 +12,7 @@ import java.util.NoSuchElementException;
 class Edge {
     int source, destination, weight;
 
-    // Constructor for Edge class
+    // Constructor for Question3.Edge class
     Edge(int source, int destination, int weight) {
         this.source = source;
         this.destination = destination;
@@ -21,12 +21,12 @@ class Edge {
 }
 
 // Main class for Bellman-Ford algorithm
-class BellmanFord {
+public class BellmanFord {
     private int vertices, edges;
     private List<Edge> edgeList;
 
-    // Constructor for BellmanFord class
-    BellmanFord(int vertices, int edges) {
+    // Constructor for Question3.BellmanFord class
+    public BellmanFord(int vertices, int edges) {
         this.vertices = vertices;
         this.edges = edges;
         this.edgeList = new ArrayList<>();
@@ -75,11 +75,11 @@ class BellmanFord {
     }
 }
 
-// Implementation of MaxHeapPriorityQueue
-class MaxHeapPriorityQueue {
+// Implementation of Question3.MaxHeapPriorityQueue
+public class MaxHeapPriorityQueue {
     private List<Integer> heap;
 
-    // Constructor for MaxHeapPriorityQueue class
+    // Constructor for Question3.MaxHeapPriorityQueue class
     MaxHeapPriorityQueue() {
         heap = new ArrayList<>();
     }
@@ -143,7 +143,7 @@ class MaxHeapPriorityQueue {
     }
 }
 
-// Main class for testing Bellman-Ford algorithm and MaxHeapPriorityQueue
+// Main class for testing Bellman-Ford algorithm and Question3.MaxHeapPriorityQueue
 public class BelmanandHeap {
 
     public static void main(String[] args) {
@@ -151,7 +151,7 @@ public class BelmanandHeap {
         int vertices = 5;
         int edges = 8;
 
-        // Create an instance of BellmanFord class and add edges
+        // Create an instance of Question3.BellmanFord class and add edges
         BellmanFord bellmanFord = new BellmanFord(vertices, edges);
         bellmanFord.addEdge(0, 1, -1);
         bellmanFord.addEdge(0, 2, 4);
@@ -166,7 +166,7 @@ public class BelmanandHeap {
         // Apply Bellman-Ford algorithm to find shortest paths
         bellmanFord.bellmanFord(sourceVertex);
 
-        // Create an instance of MaxHeapPriorityQueue and insert elements
+        // Create an instance of Question3.MaxHeapPriorityQueue and insert elements
         MaxHeapPriorityQueue maxHeap = new MaxHeapPriorityQueue();
         maxHeap.insert(5);
         maxHeap.insert(10);

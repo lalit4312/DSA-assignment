@@ -1,3 +1,6 @@
+package Question4;
+
+import Question4.MinStepsToCompleteTasks;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

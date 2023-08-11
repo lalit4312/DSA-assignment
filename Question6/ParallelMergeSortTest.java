@@ -1,3 +1,6 @@
+package Question6;
+
+import Question6.ParallelMergeSort;
 import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;

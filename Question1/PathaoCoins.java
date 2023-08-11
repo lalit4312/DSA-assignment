@@ -1,4 +1,4 @@
-// 1.b)
+package Question1;// 1.b)
 // A group of n Pathao riders stood in a queue, and each rider was assigned a unique integer rating based on their
 // performance over the year. The Pathao company planned to distribute gold coins to each rider in ascending order,
 // starting from count 1. The riders with higher ratings should receive more coins than their neighboring riders. The

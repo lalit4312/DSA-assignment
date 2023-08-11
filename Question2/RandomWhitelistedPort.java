@@ -1,4 +1,4 @@
-//2.b)
+package Question2;//2.b)
 // Given an integer value k and an array of integers representing blacklisted ports, create an algorithm that outputs a
 // random port (an integer value between 0 and k-1) that is also a whitelisted port (meaning it is not in the array of
 // blacklisted ports). The goal is to minimize the number of built-in random calls in the algorithm.

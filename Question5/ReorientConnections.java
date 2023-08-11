@@ -1,4 +1,4 @@
-// 5.b)
+package Question5;// 5.b)
 // A network consisting of n servers is connected in a tree structure, where the servers are numbered from 0 to n -
 // 1 and there are n - 1 connections between them that only allow for one-way communication. A 2D array a is
 // used to represent these connections, where a[i] = [ai, bi] represents a directed path from server ai to server bi.

@@ -1,3 +1,6 @@
+package Question3;
+
+import Question3.MaxPointsFromShootingTargets;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

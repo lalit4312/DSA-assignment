@@ -1,4 +1,4 @@
-// 1.a)
+package Question1;// 1.a)
 // A trio of friends planned to purchase clothing from a particular store for an upcoming party, intending to wear
 // matching outfits in varying colors - black, blue, and pink. The store had three different clothing sets on display,
 // each in a different color. The shopkeeper assisted the three friends by selecting a clothing set in the appropriate

@@ -1,4 +1,4 @@
-// Question 3
+package Question3;// Question 3
 // a) Suppose you are provided an array of n targets that are placed in a row from 0 to n-1. Each target is assigned
 // with certain integer such that a [0] represent the value associated with target zero. You are asked to shoot all
 // the targets. If you shoot I th target then you will get a[i-1]*a[i]*a[i+1] points.

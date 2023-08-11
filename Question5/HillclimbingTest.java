@@ -1,3 +1,6 @@
+package Question5;
+
+import Question5.HillClimbing;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

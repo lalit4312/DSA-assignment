@@ -1,3 +1,6 @@
+package Question1;
+
+import Question1.PathaoCoins;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

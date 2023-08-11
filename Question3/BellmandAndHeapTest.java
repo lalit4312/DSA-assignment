@@ -1,3 +1,7 @@
+package Question3;
+
+import Question3.BellmanFord;
+import Question3.MaxHeapPriorityQueue;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

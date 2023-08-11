@@ -1,3 +1,6 @@
+package Question2;
+
+import Question2.LongestSubsequence;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
